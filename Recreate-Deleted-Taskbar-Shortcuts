@@ -1,14 +1,14 @@
 # RUN THIS SCRIPT AT YOUR OWN RISK!
 
-#Get list of users 
+#Get list of users; skip Public and Administrator Accounts
 
-$Users = Get-ChildItem -Path "C:\Users" | Where-Object {($_.Name -notmatch 'Public') -and ($_.Name -notmatch 'ITAdmin')} | Select-Object -Expand Name 
+$Users = Get-ChildItem -Path "C:\Users" | Where-Object {($_.Name -notmatch 'Public') -and ($_.Name -notmatch 'Administrator')} | Select-Object -Expand Name 
 
 ForEach ($User in $Users)
 {
 $Taskbar = "C:\Users\$User\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
 
-#Programs to add to each user pinned taskbar folder. If program is not installed on machine, skip it
+#Programs to add to each user pinned taskbar folder. If program was not pinned by user previously it will not show up in taskbar after script
 
 $programs = @{
     "Microsoft Outlook"             = "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
