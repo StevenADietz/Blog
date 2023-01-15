@@ -11,9 +11,9 @@ $Taskbar = "C:\Users\$User\AppData\Roaming\Microsoft\Internet Explorer\Quick Lau
 #Programs to add to each user pinned taskbar folder. If program was not pinned by user previously it will not show up in taskbar after script
 
 $programs = @{
-    "Microsoft Outlook"             = "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
-    "Microsoft Excel"               = "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"
-    "Microsoft Word"                = "C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"
+    "Outlook"             = "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
+    "Excel"               = "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"
+    "Word"                = "C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"
     "Microsoft Edge"                = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
     "Snagit 2019"                   = "C:\Program Files\TechSmith\Snagit 2019\SnagIt32.exe"
     "Snagit 2019 Editor"            = "C:\Program Files\TechSmith\Snagit 2019\SnagitEditor.exe"
