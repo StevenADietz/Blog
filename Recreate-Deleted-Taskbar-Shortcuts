@@ -1,0 +1,58 @@
+# RUN THIS SCRIPT AT YOUR OWN RISK!
+
+#Get list of users 
+
+$Users = Get-ChildItem -Path "C:\Users" | Where-Object {($_.Name -notmatch 'Public') -and ($_.Name -notmatch 'ITAdmin')} | Select-Object -Expand Name 
+
+ForEach ($User in $Users)
+{
+$Taskbar = "C:\Users\$User\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
+
+#Programs to add to each user pinned taskbar folder. If program is not installed on machine, skip it
+
+$programs = @{
+    "Microsoft Outlook"             = "C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE"
+    "Microsoft Excel"               = "C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE"
+    "Microsoft Word"                = "C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE"
+    "Microsoft Edge"                = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+    "Snagit 2019"                   = "C:\Program Files\TechSmith\Snagit 2019\SnagIt32.exe"
+    "Snagit 2019 Editor"            = "C:\Program Files\TechSmith\Snagit 2019\SnagitEditor.exe"
+    "SSH, Telnet and Rlogin Client" = "C:\Program Files\Putty\putty.exe"
+    "Notepad++"                     = "C:\Program Files\Notepad++\notepad++.exe"
+    "Command Prompt"                = "%windir%\system32\cmd.exe"
+    "GoToMeeting"                   = "C:\Users\$User\AppData\Local\GoToMeeting\19950\g2mstart.exe"
+    "Adobe Acrobat"                 = “C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe”
+    “Acrobat Reader DC”             = “C:\Program Files (x86)\Adobe\Acrobat Reader DC\Reader\AcroRd32.exe”
+    “Firefox”                       = “C:\Program Files\Mozilla Firefox\firefox.exe”
+    “Google Chrome”                 = “C:\Program Files\Google\Chrome\Application\chrome.exe”
+    “Zoom”                          = “C:\Program Files\Zoom\bin\Zoom.exe”
+    #Add all known programs in your environment to this list
+}
+#Check for shortcuts in Taskbar folder and create if missing
+$programs.GetEnumerator() | ForEach-Object {
+    if (Test-Path -Path $_.Value) {
+        if (-not (Test-Path -Path "$Taskbar\$($_.Key).lnk")) {
+            write-host ("Shortcut for {0} not found in User [$User] Taskbar folder - Creating it now" -f $_.Key, $_.Value) -ForegroundColor Yellow
+            $shortcut = "$Taskbar\$($_.Key).lnk"
+            $target = $_.Value
+            $description = $_.Key
+            $workingdirectory = (Get-ChildItem $target).DirectoryName
+            $WshShell = New-Object -ComObject WScript.Shell
+            $Shortcut = $WshShell.CreateShortcut($shortcut)
+            $Shortcut.TargetPath = $target
+            $Shortcut.Description = $description
+            $shortcut.WorkingDirectory = $workingdirectory
+            $Shortcut.Save()
+        }
+    }
+}
+
+} #End ForEach User Loop
+
+#Restart Explorer Process for taskbar icons to immediately be fixed; comment out if you do not want to restart explorer process
+
+taskkill /f /im explorer.exe
+Start-Process Explorer.exe
+
+# Credits and special thanks to..
+# Harm Veenstra - https://powershellisfun.com/2023/01/13/recreate-start-menu-shortcuts-asrmageddon/
